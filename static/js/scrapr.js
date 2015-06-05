@@ -4,7 +4,7 @@ var scrapr = {
     
     start: function() {
         if(!window.localStorage) {
-            alert('scrapr requires a modern browser with localStorage support. bye!');
+            scrapr.show_error('scrapr requires a modern browser with localStorage support. bye!');
             return false;
         }
         
@@ -35,6 +35,7 @@ var scrapr = {
     
     logged_out: function() {
         $('#nav-login').show();
+        scrapr.show_view('route-default');
     },
     
     route: function(hash) {
