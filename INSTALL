@@ -3,5 +3,4 @@
 3. Create a Flickr API key: https://www.flickr.com/services/apps/create/
 4. Put your keys and passwords in lib/credentials.default.php and move the file to lib/credentials.php
 5. Open your browser to the install location
-
-NOTE: THERE IS NO MECHANISM TO INSERT A USER RIGHT NOW!
+6. Create your user login

@@ -1,8 +1,7 @@
 <?php
 
 require_once('loader.php');
-ini_set('display_errors', 1);
-error_reporting(E_ALL^E_NOTICE);
+error_reporting(E_ERROR); 
 
 switch($_REQUEST['mode']) {
     case 'login':
@@ -32,6 +31,38 @@ switch($_REQUEST['mode']) {
         }
         break;
         
+    case 'first_run':
+        $u = new DB_users();
+        $users = $u->get_num_users();
+        
+        if($users > 1)
+        {
+            json_response(array('error'=>array('message'=>'There are already 2 users on the system')), 500);
+        }
+        elseif($_POST['username'] == 'system')
+        {
+            json_response(array('error'=>array('message'=>'Username is reserved')), 500);
+        }
+        else
+        {
+            $data = array();
+            $data['username'] = $_POST['username'];
+            $data['secret'] = $u->generate_secret();
+            $data['api_key'] = $u->generate_api_key();
+            $data['log_in'] = 1;
+            $data['passhash'] = $u->hash_password($_POST['password'], $data['secret']);
+            
+            if($u->insert($data))
+            {
+                json_response(array('message'=>'Created user'));
+            }
+            else
+            {
+                json_response(array('error'=>array('message'=>'User creation failed')), 500);
+            }
+        }
+        break;
+        
     case 'confirm_key':
         if(confirm_api_key($_GET['api_key']))
         {
@@ -49,6 +80,13 @@ switch($_REQUEST['mode']) {
         
         break;
         
+    case 'num_users':
+        $u = new DB_users();
+        $users = $u->get_num_users();
+        
+        json_response(array('num_users'=>$users));
+        break;
+    
     case 'all_profiles':
         if(confirm_api_key($_GET['api_key']))
         {

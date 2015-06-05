@@ -11,7 +11,7 @@ class DB_photos extends DB_Model
     
     function get_new_scrape_result() 
     {
-        $query = "SELECT COUNT(*) AS cnt FROM photos INNER JOIN '.SQL_DB.'.scrape_results ON scrape_results.photo_id=photos.id WHERE viewed IS NULL and deleted IS NULL";
+        $query = "SELECT COUNT(*) AS cnt FROM photos INNER JOIN scrape_results ON scrape_results.photo_id=photos.id WHERE viewed IS NULL and deleted IS NULL";
         
         $res = $this->sql->SQL_Exec($query);
         
@@ -20,7 +20,7 @@ class DB_photos extends DB_Model
     
     function get_new_search_result() 
     {
-        $query = "SELECT COUNT(*) AS cnt FROM photos INNER JOIN ".SQL_DB.".search_results ON search_results.photo_id=photos.id WHERE viewed IS NULL and deleted IS NULL";
+        $query = "SELECT COUNT(*) AS cnt FROM photos INNER JOIN search_results ON search_results.photo_id=photos.id WHERE viewed IS NULL and deleted IS NULL";
         
         $res = $this->sql->SQL_Exec($query);
         

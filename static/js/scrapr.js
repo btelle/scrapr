@@ -17,6 +17,15 @@ var scrapr = {
             return false;
         });
         
+        $.ajax({
+            url: 'ajax.php?mode=num_users',
+            success: function(data) {
+                if(data.num_users <= 1) {
+                    location.hash = '#first-run';
+                }
+            }
+        });
+        
         scrapr.confirm_api_key();
     }, 
     
@@ -28,11 +37,9 @@ var scrapr = {
         $('#nav-login').show();
     },
     
-    route: function() {
-        hash = location.hash;
-        
-        if(hash == '') {
-            return;
+    route: function(hash) {
+        if(typeof(hash) == 'undefined') {
+            hash = location.hash;
         }
         
         console.log('Routing to '+hash);
@@ -44,6 +51,10 @@ var scrapr = {
         }
         
         scrapr.messages = [];
+        
+        if(hash == '') {
+            return;
+        }
         
         $('ul.navbar-nav li').each(function() {
             $(this).removeClass('active');
@@ -59,7 +70,7 @@ var scrapr = {
             $('a[href="#follow"]').parent('li').addClass('active');
             $('#route-photos div.filler').html('');
             $.ajax({
-                url: '/ajax.php', 
+                url: 'ajax.php', 
                 data: {api_key: scrapr.api_key, mode: 'follow_photos'},
                 success: function(data) {
                     for(i in data.photos) {
@@ -79,7 +90,7 @@ var scrapr = {
             $('a[href="#search"]').parent('li').addClass('active');
             $('#route-photos div.filler').html('');
             $.ajax({
-                url: '/ajax.php', 
+                url: 'ajax.php', 
                 data: {api_key: scrapr.api_key, mode: 'search_photos'},
                 success: function(data) {
                     for(i in data.photos) {
@@ -110,7 +121,7 @@ var scrapr = {
             $('#follows-editor form').unbind('submit');
             
             $.ajax({
-                url: '/ajax.php?mode=all_profiles&api_key='+scrapr.api_key,
+                url: 'ajax.php?mode=all_profiles&api_key='+scrapr.api_key,
                 success: function(data) {
                     $('#route-follows table tbody').html('');
                     
@@ -123,7 +134,7 @@ var scrapr = {
                     $('a[href="#follows-editor"]').unbind('click').click(function() {
                         if($(this).attr('data-follow-id')) {
                             $.ajax({
-                                url: '/ajax.php',
+                                url: 'ajax.php',
                                 data: {mode: 'profile', api_key: scrapr.api_key, id: $(this).attr('data-follow-id')},
                                 type: 'get',
                                 success: function(data) {
@@ -145,7 +156,7 @@ var scrapr = {
                     
                     $('a[href="#follows-delete"]').unbind('click').click(function() {
                         $.ajax({
-                            url: '/ajax.php?mode=delete_profile',
+                            url: 'ajax.php?mode=delete_profile',
                             data: {api_key: scrapr.api_key, id: $(this).attr('data-follow-id')},
                             type: 'post',
                             success: function(data) {
@@ -165,7 +176,7 @@ var scrapr = {
                         };
                         
                         $.ajax({
-                            url: '/ajax.php?mode=profile',
+                            url: 'ajax.php?mode=profile',
                             data: data, 
                             type: 'post',
                             success: function(data) {
@@ -185,7 +196,7 @@ var scrapr = {
             $('#query-editor form').unbind('submit');
             
             $.ajax({
-                url: '/ajax.php',
+                url: 'ajax.php',
                 data: {api_key: scrapr.api_key, mode: 'all_queries'},
                 success: function(data) {
                     $('#route-queries table tbody').html('');
@@ -199,7 +210,7 @@ var scrapr = {
                     $('a[href="#query-editor"]').unbind('click').click(function() {
                         if($(this).attr('data-query-id')) {
                             $.ajax({
-                                url: '/ajax.php',
+                                url: 'ajax.php',
                                 data: {mode: 'query', api_key: scrapr.api_key, id: $(this).attr('data-query-id')},
                                 type: 'get',
                                 success: function(data) {
@@ -220,7 +231,7 @@ var scrapr = {
                     
                     $('a[href="#query-delete"]').unbind('click').click(function() {
                         $.ajax({
-                            url: '/ajax.php?mode=delete_query',
+                            url: 'ajax.php?mode=delete_query',
                             data: {api_key: scrapr.api_key, id: $(this).attr('data-query-id')},
                             type: 'post',
                             success: function(data) {
@@ -239,7 +250,7 @@ var scrapr = {
                         };
                         
                         $.ajax({
-                            url: '/ajax.php?mode=query',
+                            url: 'ajax.php?mode=query',
                             data: data, 
                             type: 'post',
                             success: function(data) {
@@ -258,7 +269,7 @@ var scrapr = {
             $('#filter-editor form').unbind('submit');
             
             $.ajax({
-                url: '/ajax.php',
+                url: 'ajax.php',
                 data: {api_key: scrapr.api_key, mode: 'all_filters'},
                 success: function(data) {
                     $('#route-filters table tbody').html('');
@@ -272,7 +283,7 @@ var scrapr = {
                     $('a[href="#filter-editor"]').unbind('click').click(function() {
                         if($(this).attr('data-filter-id')) {
                             $.ajax({
-                                url: '/ajax.php',
+                                url: 'ajax.php',
                                 data: {mode: 'filter', api_key: scrapr.api_key, id: $(this).attr('data-filter-id')},
                                 type: 'get',
                                 success: function(data) {
@@ -305,7 +316,7 @@ var scrapr = {
                     
                     $('a[href="#filter-delete"]').unbind('click').click(function() {
                         $.ajax({
-                            url: '/ajax.php?mode=delete_filter',
+                            url: 'ajax.php?mode=delete_filter',
                             data: {api_key: scrapr.api_key, id: $(this).attr('data-filter-id')},
                             type: 'post',
                             success: function(data) {
@@ -324,11 +335,11 @@ var scrapr = {
                             operator: $('#filters-operator').val(),
                             value: $('#filters-value').val(),
                             action: $('#filters-action').val(),
-                            priority: $('#filters-priority').val(),
+                            priority: $('#filters-priority').val()
                         };
                         
                         $.ajax({
-                            url: '/ajax.php?mode=filter',
+                            url: 'ajax.php?mode=filter',
                             data: data, 
                             type: 'post',
                             success: function(data) {
@@ -346,7 +357,7 @@ var scrapr = {
             $('ul.nav a.dropdown-toggle').parent('li').addClass('active');
             $('#route-logs table tbody').html('');
             $.ajax({
-                url: '/ajax.php',
+                url: 'ajax.php',
                 data: {
                     api_key: scrapr.api_key, 
                     mode: 'logs', 
@@ -375,6 +386,36 @@ var scrapr = {
                     scrapr.show_view('route-logs');
                 }
             });
+        } else if(hash === '#first-run') {
+            $('#first-run').modal('show');
+            
+            $('#first-run form').submit(function() {
+                if($('#first-password').val() != $('#first-confirm').val()) {
+                    scrapr.show_error('Mis-matching passwords');
+                } else {
+                    data = {
+                        username: $('#first-username').val(),
+                        password: $('#first-password').val(),
+                        mode: 'first_run'
+                    };
+                    
+                    $.ajax({
+                        url: 'ajax.php',
+                        data: data,
+                        type: 'post',
+                        success: function() {
+                            scrapr.messages.push({message:'User created successfully, please log in', type:'success'});
+                            location.hash = '';
+                            
+                            $('#first-run').modal('hide');
+                            $('#username').focus();
+                        },
+                        error: function(data) {
+                            scrapr.show_error(data.error.message);
+                        }
+                    })
+                }
+            })
         }
     },
     
@@ -386,7 +427,7 @@ var scrapr = {
         $('#'+id).show();
     },
     
-    message: function(mes, type) {
+    message: function(mes, type, insert) {
         scrapr.messages.push({message: mes, type: type});
         
         if(type == 'danger') {
@@ -398,7 +439,7 @@ var scrapr = {
         }
         
         $.ajax({
-            url: '/ajax.php', 
+            url: 'ajax.php', 
             data: {mode: 'logs', api_key: scrapr.api_key, log_level: level, message: mes},
             type: 'post',
             success: function(data) {
@@ -417,7 +458,7 @@ var scrapr = {
         $('#route-logs table tbody tr:last-child').remove();
         
         $.ajax({
-            url: '/ajax.php',
+            url: 'ajax.php',
             data: {
                 api_key: scrapr.api_key, 
                 mode: 'logs', 
@@ -455,7 +496,7 @@ var scrapr = {
         $('div.filler div.load-more').remove();
         
         $.ajax({
-            url: '/ajax.php', 
+            url: 'ajax.php', 
             data: {
                 api_key: scrapr.api_key, 
                 mode: type+'_photos', 
@@ -478,7 +519,7 @@ var scrapr = {
     
     delete_by_profile: function(snid, route) {
         $.ajax({
-            url: '/ajax.php?mode=delete_by_profile', 
+            url: 'ajax.php?mode=delete_by_profile', 
             data: {snid: snid, api_key: scrapr.api_key},
             type: 'post', 
             success: function(data) {
@@ -491,7 +532,7 @@ var scrapr = {
     
     ignore_profile: function(snid, route) {
         $.ajax({
-            url: '/ajax.php?mode=ignore_profile', 
+            url: 'ajax.php?mode=ignore_profile', 
             data: {snid: snid, api_key: scrapr.api_key},
             type: 'post', 
             success: function(data) {
@@ -509,7 +550,7 @@ var scrapr = {
         }
         
         $.ajax({
-            url: '/ajax.php',
+            url: 'ajax.php',
             data: {api_key: window.localStorage['api_key'], mode: 'confirm_key'},
             success: function(data) {
                 if(data.message == 'OK') {
@@ -545,7 +586,7 @@ var scrapr = {
         });
         
         $.ajax({
-            url: '/ajax.php?mode=login',
+            url: 'ajax.php?mode=login',
             data: {username: $('#username').val(), password: $('#password').val()},
             type: 'post',
             success: function(data) {

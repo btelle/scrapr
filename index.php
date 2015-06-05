@@ -60,7 +60,7 @@
         </div>
     </div>
     
-    <div class="container router default-on" id="route-default">
+    <div class="container router default-off" id="route-default">
         <div class="row">
             <div class="col-lg-6 col-lg-offset-3">
                 <div class="panel panel-danger">
@@ -80,6 +80,7 @@
     <? require_once('templates/queries.php'); ?>
     <? require_once('templates/filters.php'); ?>
     <? require_once('templates/logs.php'); ?>
+    <? require_once('templates/first_run.php'); ?>
     
     <script src="https://code.jquery.com/jquery-2.1.4.min.js" type="text/javascript"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js" type="text/javascript"></script>
