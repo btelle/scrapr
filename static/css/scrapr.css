@@ -1,0 +1,41 @@
+/* Scrapr CSS */
+
+#nav-login, #nav-settings {
+    display: none;
+}
+
+div.router {
+    display: none;
+}
+
+div.router.default-on {
+    display: block;
+}
+
+.navbar-brand {
+    font-size: 23px;
+}
+
+table caption span {
+    float: right;
+}
+
+.table-hover > tbody > tr.log-warning {
+    background-color: #FFFFDD;
+}
+
+.table-hover > tbody > tr.log-warning:hover {
+    background-color: #fdfcab;
+}
+
+.table-hover > tbody > tr.log-error {
+    background-color: #FFEAEA;
+}
+
+.table-hover > tbody > tr.log-error:hover {
+    background-color: #FDABAB;
+}
+
+div.filler div.row {
+	margin-bottom: 10px;
+}
