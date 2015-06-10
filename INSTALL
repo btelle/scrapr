@@ -4,3 +4,6 @@
 4. Put your keys and passwords in lib/credentials.default.php and move the file to lib/credentials.php
 5. Open your browser to the install location
 6. Create your user login
+7. Create a cron job to run cron.php every 6 hours (or more often if you like poking the Flickr bear)
+   */6 *  * * *  nobody php /path/to/scrapr/cron.php
+8. Create search queries and follow users through the app's settings
