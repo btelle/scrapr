@@ -27,6 +27,15 @@ class DB_photos extends DB_Model
         return isset($res[0]['cnt'])? $res[0]['cnt']: 0;
     }
     
+    function get_saved_count()
+    {
+        $query = "SELECT COUNT(*) AS cnt FROM photos WHERE saved_file IS NOT NULL";
+        
+        $res = $this->sql->SQL_Exec($query);
+        
+        return isset($res[0]['cnt'])? $res[0]['cnt']: 0;
+    }
+    
     function insert_search_result($data)
     {
         return $this->sql->SQL_Insert('search_results', $data);
@@ -62,6 +71,18 @@ class DB_photos extends DB_Model
         return $this->sql->SQL_Select('photos INNER JOIN search_results ON photos.id=search_results.photo_id', 'photos.*, retrieved, viewed', $where, 'photos.id DESC', $limit);
     }
     
+    function get_saved_photos($start_id, $limit=30)
+    {
+        $where = array();
+        
+        if($start_id > 0)
+            $where[] = "photos.id < '".$start_id."'";
+        
+        $where[] = 'saved_file IS NOT NULL';
+        
+        return $this->sql->SQL_Select('photos', '*', $where, 'photos.id DESC', $limit);
+    }
+    
     function mark_viewed($type, $start, $end)
     {
         switch($type)
@@ -87,8 +108,48 @@ class DB_photos extends DB_Model
     
     function delete($id)
     {
-        $this->sql->SQL_Delete('scrape_results', array('photo_id'=>$id));
-        $this->sql->SQL_Delete('search_results', array('photo_id'=>$id));
-        return parent::delete($id);
+        $rows = $this->sql->SQL_Select($this->table, '*', array('id'=>$id));
+        if(isset($rows[0]))
+        {
+            $this->sql->SQL_Delete('scrape_results', array('photo_id'=>$id));
+            $this->sql->SQL_Delete('search_results', array('photo_id'=>$id));
+            
+            if($rows[0]['saved_file'] != '')
+            {
+                @unlink($rows[0]['saved_file']);
+            }
+            
+            return parent::delete($id);
+        }
+    }
+    
+    function save_image($id)
+    {
+        $rows = $this->sql->SQL_Select($this->table, '*', array('id'=>$id));
+        
+        if(isset($rows[0]['id']))
+        {
+            $filename = SAVE_DIR.($rows[0]['original'] == ''? basename($rows[0]['large']): basename($rows[0]['original']));
+            
+            $fh = fopen($filename, 'w');
+            fwrite($fh, file_get_contents($rows[0]['original'] == ''? $rows[0]['large']: $rows[0]['original']));
+            fclose($fh);
+            
+            $update = array('saved_file'=>$filename, 'deleted'=>NULL);
+            $this->sql->SQL_Update($this->table, $update, array('id'=>$id));
+            return TRUE;
+        }
+        
+        return FALSE;
+    }
+    
+    function get_saved_image($id)
+    {
+        $rows = $this->sql->SQL_Select($this->table, '*', array('id'=>$id));
+        
+        if(isset($rows[0]))
+            return $rows[0];
+        
+        return FALSE;
     }
 }

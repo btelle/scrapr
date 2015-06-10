@@ -84,6 +84,10 @@ var scrapr = {
                         scrapr.load_more_photos('follow');
                     });
                     
+                    $('a[href="#save"]').click(function() {
+                        return scrapr.save_image($(this).parents('div.row').attr('data-photo-id'));
+                    });
+                                        
                     scrapr.show_view('route-photos');
                 }
             });
@@ -113,6 +117,38 @@ var scrapr = {
                         scrapr.ignore_profile($(this).attr('data-profile-snid'), '#search');
                         return false;
                     });
+                    
+                    $('a[href="#save"]').click(function() {
+                        return scrapr.save_image($(this).parents('div.row').attr('data-photo-id'));
+                    });
+                    
+                    scrapr.show_view('route-photos');
+                }
+            });
+        } else if(hash === '#saved') {
+            $('a[href="#saved"]').parent('li').addClass('active');
+            $('#route-photos div.filler').html('');
+            $.ajax({
+                url: 'ajax.php', 
+                data: {api_key: scrapr.api_key, mode: 'saved_photos'},
+                success: function(data) {
+                    for(i in data.photos) {
+                        scrapr.show_photo_row(data.photos[i], 'saved');
+                    }
+                    
+                    $('div.filler').append('<div class="row load-more"><div class="col-lg-8 text-center"><button class="btn btn-success">Load More</button></div></div>');
+                    
+                    $('.load-more button').click(function() {
+                        scrapr.load_more_photos('follow');
+                    });
+                    
+                    $('a[href="#download"]').click(function() {
+                        return scrapr.download_image($(this).parents('div.row').attr('data-photo-id'));
+                    }); 
+                    
+                    $('a[href="#delete"]').click(function() {
+                        return scrapr.delete_image($(this).parents('div.row').attr('data-photo-id'));
+                    }); 
                     
                     scrapr.show_view('route-photos');
                 }
@@ -491,9 +527,11 @@ var scrapr = {
         }
         
         if(photo_type == 'follow') {
-                controls = '<li><a href="https://www.flickr.com/photos/'+photo.owner+'" target="_blank">View this profile</a></li>';
+            controls = '<li><a href="https://www.flickr.com/photos/'+photo.owner+'" target="_blank">View this profile</a></li><li><a href="#save">Save for later</a></li>';
         } else if(photo_type == 'search') {
-                controls = '<li><a href="https://www.flickr.com/photos/'+photo.owner+'" target="_blank">View this profile</a></li><li><a href="#delete-by-profile" data-profile-snid="'+photo.owner+'">Delete all by this profile</a></li><li><a href="#ignore-profile" data-profile-snid="'+photo.owner+'">Ignore this profile</a></li>';
+            controls = '<li><a href="https://www.flickr.com/photos/'+photo.owner+'" target="_blank">View this profile</a></li><li><a href="#save">Save for later</a></li>';
+        } else if(photo_type == 'saved') {
+            controls = '<li><a href="#download" download>Download</a></li><li><a href="#delete">Delete</a></li>';
         }
         $('#route-photos div.filler').append('<div class="row" data-photo-id="'+photo.id+'"><div class="col-lg-8"><a href="'+photo_url+'" target="_blank"><img src="'+photo.large+'" alt="Photo '+photo.id+'" class="img-responsive"></a></div><div class="col-lg-4"><ul>'+controls+'</ul></div></div>');
     },
@@ -519,6 +557,18 @@ var scrapr = {
                 $('div.filler button').unbind('click').click(function() {
                     scrapr.load_more_photos(type);
                 });
+                
+                $('a[href="#save"]').unbind('click').click(function() {
+                    return scrapr.save_image($(this).parents('div.row').attr('data-photo-id'));
+                });
+                
+                $('a[href="#download"]').unbind('click').click(function() {
+                    return scrapr.download_image($(this).parents('div.row').attr('data-photo-id'));
+                }); 
+
+                $('a[href="#delete"]').unbind('click').click(function() {
+                    return scrapr.delete_image($(this).parents('div.row').attr('data-photo-id'));
+                }); 
             }
         });
     },
@@ -549,6 +599,43 @@ var scrapr = {
         });
     },
     
+    save_image: function(photo_id) {
+        console.log('Saving image #'+photo_id);
+        $.ajax({
+            url: 'ajax.php?mode=save',
+            data: {id: photo_id, api_key: scrapr.api_key},
+            type: 'post',
+            success: function(data) {
+                $('div.row[data-photo-id="'+photo_id+'"] a[href="#save"]').append(' <i class="glyphicon glyphicon-ok"></i>');
+            }
+        });
+        return false;
+    },
+    
+    download_image: function(photo_id) {
+        $.ajax({
+            url: 'ajax.php',
+            data: {mode: 'dl', id: photo_id, api_key: scrapr.api_key},
+            success: function(data) {
+                location.assign(data.url);
+            }
+        });
+        return false;
+    },
+    
+    delete_image: function(photo_id) {
+        console.log('Deleting image #'+photo_id);
+        $.ajax({
+            url: 'ajax.php?mode=delete',
+            data: {id: photo_id, api_key: scrapr.api_key},
+            type: 'post',
+            success: function(data) {
+                $('div.row[data-photo-id="'+photo_id+'"] a[href="#delete"]').append(' <i class="glyphicon glyphicon-ok"></i>');
+            }
+        });
+        return false;
+    },
+    
     confirm_api_key: function() {
         if(!window.localStorage['api_key']) {
             scrapr.logged_out();
@@ -569,6 +656,10 @@ var scrapr = {
                     
                     if(data.new_search_count > 0) {
                         $('ul.nav a[href="#search"] span').html(data.new_search_count);
+                    }
+                    
+                    if(data.new_saved_count > 0) {
+                        $('ul.nav a[href="#saved"] span').html(data.new_saved_count);
                     }
 
                     if(location.hash == '') {

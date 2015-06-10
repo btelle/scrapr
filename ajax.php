@@ -18,6 +18,7 @@ switch($_REQUEST['mode']) {
                 $data['api_key'] = $user['api_key'];
                 $data['new_follow_count'] = $p->get_new_scrape_result();
                 $data['new_search_count'] = $p->get_new_search_result();
+                $data['new_saved_count'] = $p->get_saved_count();
                 json_response($data);
             }
             else
@@ -71,6 +72,7 @@ switch($_REQUEST['mode']) {
             $data = array('message'=>'OK');
             $data['new_follow_count'] = $p->get_new_scrape_result();
             $data['new_search_count'] = $p->get_new_search_result();
+            $data['new_saved_count'] = $p->get_saved_count();
             json_response($data);
         }
         else
@@ -415,6 +417,21 @@ switch($_REQUEST['mode']) {
         }
         break;
         
+    case 'saved_photos':
+        if(confirm_api_key($_GET['api_key']))
+        {
+            $p = new DB_Photos();
+            
+            $rows = $p->get_saved_photos($_GET['last_id']);
+            
+            json_response(array('photos'=>$rows));
+        }
+        else
+        {
+            json_response(array('error'=>array('message'=>'Not Logged In')), 401);
+        }
+        break;
+        
     case 'delete_by_profile':
         if(confirm_api_key($_POST['api_key']))
         {
@@ -437,6 +454,67 @@ switch($_REQUEST['mode']) {
             
             if($f->ignore_profile($_POST['snid']) && $p->delete_by_profile($_POST['snid']))
                 json_response(array('message'=>'OK'));
+        }
+        else
+        {
+            json_response(array('error'=>array('message'=>'Not Logged In')), 401);
+        }
+        break;
+        
+    case 'save':
+        if(confirm_api_key($_POST['api_key']))
+        {
+            $p = new DB_photos();
+            
+            if($p->save_image($_POST['id']))
+            {
+                json_response(array('message'=>'OK'));
+            }
+            else
+            {
+                json_response(array('error'=>array('message'=>'Save Failed')), 500);
+            }
+        }
+        else
+        {
+            json_response(array('error'=>array('message'=>'Not Logged In')), 401);
+        }
+        break;
+        
+    case 'delete':
+        if(confirm_api_key($_POST['api_key']))
+        {
+            $p = new DB_photos();
+            
+            if($p->delete($_POST['id']))
+            {
+                json_response(array('message'=>'OK'));
+            }
+            else
+            {
+                json_response(array('error'=>array('message'=>'Delete Failed')), 500);
+            }
+        }
+        else
+        {
+            json_response(array('error'=>array('message'=>'Not Logged In')), 401);
+        }
+        break;
+        
+    case 'dl':
+        if(confirm_api_key($_GET['api_key']))
+        {
+            $p = new DB_photos();
+            $photo = $p->get_saved_image($_GET['id']);
+            
+            if(isset($photo['saved_file']) && $photo['saved_file'] != '')
+            {
+                json_response(array('message'=>'OK', 'url'=>$photo['saved_file']));
+            }
+            else
+            {
+                json_response(array('error'=>array('message'=>'Could not find photo')), 404);
+            }
         }
         else
         {

@@ -27,6 +27,7 @@
                 <ul class="nav navbar-nav">
                     <li><a href="#follow">People you follow <span class="badge"></span></a></li>
                     <li><a href="#search">Search results <span class="badge"></span></a></li>
+                    <li><a href="#saved">Saved <span class="badge"></span></a></li>
                     <li class="dropdown" id="nav-settings">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Settings <span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">

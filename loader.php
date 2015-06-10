@@ -5,6 +5,7 @@ ini_set("display_errors", 1);
 date_default_timezone_set('America/Los_Angeles');
 define('LIB_DIR', 'lib/');
 define('MODELS_DIR', 'models/');
+define('SAVE_DIR', 'saved/');
 
 if(!file_exists(LIB_DIR) || !file_exists(MODELS_DIR))
     die('Please specify the location of you lib and models directories in loader.php');
