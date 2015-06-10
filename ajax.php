@@ -13,7 +13,7 @@ switch($_REQUEST['mode']) {
             $user = $user[0];
             if($u->hash_password($_POST['password'], $user['secret']) === $user['passhash'])
             {
-				$p = new DB_photos();
+                $p = new DB_photos();
                 $data = array('message'=>'Correct log in');
                 $data['api_key'] = $user['api_key'];
                 $data['new_follow_count'] = $p->get_new_scrape_result();

@@ -16,10 +16,12 @@ CREATE  TABLE IF NOT EXISTS `flickr_scraper`.`photos` (
   `server_id` INT(8) NOT NULL ,
   `photo_id` CHAR(15) NOT NULL ,
   `secret` VARCHAR(20) NOT NULL ,
+  `owner` VARCHAR(255) NOT NULL,
   `date_taken` DATETIME NOT NULL ,
   `large` VARCHAR(255) NOT NULL ,
   `original` VARCHAR(255) NOT NULL ,
   `deleted` DATETIME NULL ,
+  `saved_file` VARCHAR(255) NULL,
   PRIMARY KEY (`id`) ,
   UNIQUE INDEX `PHOTO_UQ` (`farm_id` ASC, `server_id` ASC, `photo_id` ASC, `secret` ASC) ,
   INDEX `DATE_TAKEN` (`date_taken` ASC, `photo_id` ASC) )
