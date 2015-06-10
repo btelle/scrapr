@@ -11,6 +11,7 @@ ini_set('max_execution_time', 60*60*6);
 $s = new Scraper();
 $s->run_scraper();
 $s->run_searches();
+$s->run_garbage_collector();
 
 class Scraper
 {
@@ -108,6 +109,14 @@ class Scraper
             }
             while(isset($photos['pages']) && $page <= $photos['pages']);
         }
+    }
+    
+    function run_garbage_collector()
+    {
+        $this->log_message('info', 'Running garbage collector');
+        
+        $p = new DB_photos();
+        $p->gc(60*60*6);
     }
 
     function process_page($photos, $src, $src_id)
