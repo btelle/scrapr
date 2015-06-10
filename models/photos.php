@@ -163,7 +163,7 @@ class DB_photos extends DB_Model
         $query = "DELETE FROM search_results WHERE UNIX_TIMESTAMP(viewed) < $ts;";
         $this->sql->SQL_Exec($query);
         
-        $query = "DELETE FROM p USING photos AS p WHERE NOT EXISTS(SELECT * FROM search_results WHERE photo_id=p.id) AND NOT EXISTS(SELECT * FROM scrape_results WHERE photo_id=p.id);";
+        $query = "DELETE FROM p USING photos AS p WHERE NOT EXISTS(SELECT * FROM search_results WHERE photo_id=p.id) AND NOT EXISTS(SELECT * FROM scrape_results WHERE photo_id=p.id) AND saved_file IS NULL;";
         $this->sql->SQL_Exec($query);
     }
 }
