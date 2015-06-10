@@ -485,12 +485,17 @@ var scrapr = {
     },
     
     show_photo_row: function(photo, photo_type) {
-		if(photo_type == 'follow') {
-			controls = '<li><a href="https://www.flickr.com/photos/'+photo.owner+'" target="_blank">View this profile</a></li>';
-		} else if(photo_type == 'search') {
-			controls = '<li><a href="https://www.flickr.com/photos/'+photo.owner+'" target="_blank">View this profile</a></li><li><a href="#delete-by-profile" data-profile-snid="'+photo.owner+'">Delete all by this profile</a></li><li><a href="#ignore-profile" data-profile-snid="'+photo.owner+'">Ignore this profile</a></li>';
-		}
-        $('#route-photos div.filler').append('<div class="row" data-photo-id="'+photo.id+'"><div class="col-lg-8"><a href="'+photo.original+'" target="_blank"><img src="'+photo.large+'" alt="Photo '+photo.id+'" class="img-responsive"></a></div><div class="col-lg-4"><ul>'+controls+'</ul></div></div>');
+        photo_url = photo.original;
+        if(photo_url == '') {
+            photo_url = photo.large;
+        }
+        
+        if(photo_type == 'follow') {
+                controls = '<li><a href="https://www.flickr.com/photos/'+photo.owner+'" target="_blank">View this profile</a></li>';
+        } else if(photo_type == 'search') {
+                controls = '<li><a href="https://www.flickr.com/photos/'+photo.owner+'" target="_blank">View this profile</a></li><li><a href="#delete-by-profile" data-profile-snid="'+photo.owner+'">Delete all by this profile</a></li><li><a href="#ignore-profile" data-profile-snid="'+photo.owner+'">Ignore this profile</a></li>';
+        }
+        $('#route-photos div.filler').append('<div class="row" data-photo-id="'+photo.id+'"><div class="col-lg-8"><a href="'+photo_url+'" target="_blank"><img src="'+photo.large+'" alt="Photo '+photo.id+'" class="img-responsive"></a></div><div class="col-lg-4"><ul>'+controls+'</ul></div></div>');
     },
     
     load_more_photos: function(type) {
