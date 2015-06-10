@@ -14,4 +14,10 @@ class DB_profiles extends DB_Model
         $rows = $this->sql->SQL_Select($this->table, '*', array('id'=>$id));
         return isset($rows[0])? $rows[0]: array();
     }
+    
+    function delete($id)
+    {
+        $this->sql->SQL_Delete('scrape_results', array('profile_id'=>$id), PHP_INT_MAX);
+        return parent::delete($id);
+    }
 }
