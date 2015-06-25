@@ -161,6 +161,19 @@ CREATE  TABLE IF NOT EXISTS `flickr_scraper`.`logs` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+
+-- -----------------------------------------------------
+-- Table `flickr_scraper`.`settings`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `flickr_scraper`.`settings` ;
+
+CREATE TABLE `settings` (
+  `key` varchar(255) NOT NULL,
+  `value` text NOT NULL,
+  PRIMARY KEY (`key`))
+ENGINE=InnoDB;
+
+
 -- -----------------------------------------------------
 -- System user
 -- Cannot log in, only used for logging
@@ -169,5 +182,21 @@ ENGINE = InnoDB;
 START TRANSACTION;
 USE `flickr_scraper`;
 INSERT INTO `flickr_scraper`.`users` (`id`, `username`, `passhash`, `secret`, `api_key`, `log_in`) VALUES (1, 'system', '374cd9d139c966f016f006517b2f4cc4d0ff7ed9a4ed579ec31ebcd869b43e9d', 'hYt86FdsC9LkmN06TgsL', 'd249176d49d18582456cac9a2c08ef91e153554e', 0);
+
+COMMIT;
+
+
+-- -----------------------------------------------------
+-- Default site settings
+-- -----------------------------------------------------
+
+START TRANSACTION;
+USE `flickr_scraper`;
+INSERT INTO `flickr_scraper`.`settings` (`key`, `value`) VALUES
+  ('log_level', 'info'),
+  ('run_scraper', '1'),
+  ('run_search', '1'),
+  ('scrape_frequency', '21600'),
+  ('site_name', 'scrapr');
 
 COMMIT;

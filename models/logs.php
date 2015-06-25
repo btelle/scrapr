@@ -25,4 +25,15 @@ class DB_logs extends DB_Model
             
         return $this->sql->SQL_Select($this->table, '*', $where, 'id DESC', $limit);
     }
+    
+    function time_since_last_scrape()
+    {
+        $tag = "Starting cron scrape";
+        
+        $last_run = $this->sql->SQL_Select($this->table, 'timestamp', array('message'=>$tag), 'id desc', 1);
+        if(isset($last_run[0]))
+            return time() - strtotime($last_run[0]['timestamp']);
+        else
+            return PHP_INT_MAX;
+    }
 }

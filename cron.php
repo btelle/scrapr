@@ -5,12 +5,20 @@ require_once('loader.php');
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
+$l = new DB_logs();
+if($l->time_since_last_scrape() < $settings->get('scrape_frequency'))
+    exit('Cron script ran too soon, aborting');
+
 set_time_limit(60*60*6);
 ini_set('max_execution_time', 60*60*6);
 
 $s = new Scraper();
-$s->run_scraper();
-$s->run_searches();
+if($settings->get('run_scraper') == '1')
+    $s->run_scraper();
+
+if($settings->get('run_search') == '1')
+    $s->run_searches();
+
 $s->run_garbage_collector();
 
 class Scraper
@@ -34,9 +42,10 @@ class Scraper
     function run_scraper()
     {
         $p = new DB_Profiles();
+        $s = new DB_settings();
         
         $params = array(
-            'min_upload_date'=>date('Y-m-d H:i:s', time()-(60*60*6)),
+            'min_upload_date'=>date('Y-m-d H:i:s', time()-$s->get('scrape_frequency')),
             'max_upload_date'=>date('Y-m-d H:i:s', time()),
             'content_type'=>6,
             'extras'=>'url_l,url_o,date_taken'
@@ -73,9 +82,10 @@ class Scraper
     function run_searches()
     {
         $s = new DB_Search_queries();
+        $settings = new DB_settings();
         
         $params = array(
-            'min_upload_date'=>date('Y-m-d H:i:s', time()-(60*60*6)),
+            'min_upload_date'=>date('Y-m-d H:i:s', time()-$settings->get('scrape_frequency')),
             'max_upload_date'=>date('Y-m-d H:i:s', time()),
             'content_type'=>6,
             'per_page'=>100,
@@ -116,7 +126,8 @@ class Scraper
         $this->log_message('info', 'Running garbage collector');
         
         $p = new DB_photos();
-        $p->gc(60*60*6);
+        $s = new DB_settings();
+        $p->gc($s->get('scrape_frequency'));
     }
 
     function process_page($photos, $src, $src_id)

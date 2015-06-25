@@ -521,6 +521,35 @@ switch($_REQUEST['mode']) {
             json_response(array('error'=>array('message'=>'Not Logged In')), 401);
         }
         break;
+        
+    case 'settings':
+        if(confirm_api_key($_GET['api_key']))
+        {
+            $data = array();
+            $s = new DB_settings();
+            $data['message'] = 'OK';
+            $data['settings'] = $s->get_all();
+            
+            json_response($data);
+        }
+        elseif(confirm_api_key($_POST['api_key']))
+        {
+            $s = new DB_settings();
+            
+            foreach($s->get_all() as $row)
+            {
+                if(isset($_POST[$row['key']]))
+                {
+                    $s->set($row['key'], $_POST[$row['key']]);
+                }
+            }
+            
+            json_response(array('message'=>'OK'));
+        }
+        else
+        {
+            json_response(array('error'=>array('message'=>'Not Logged In')), 401);
+        }
 }
 
 function json_response($resp, $code=200)

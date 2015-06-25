@@ -2,7 +2,7 @@
 <!doctype html>
 <html>
 <head>
-    <title>scrapr</title>
+    <title><?=$settings->get('site_name')?></title>
     
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
     <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; minimum-scale=1.0; user-scalable=1;" />
@@ -20,7 +20,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-              <span class="navbar-brand">scrapr</span>
+              <span class="navbar-brand"><?=$settings->get('site_name')?></span>
             </div>
 
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -29,11 +29,12 @@
                     <li><a href="#search">Search results <span class="badge"></span></a></li>
                     <li><a href="#saved">Saved <span class="badge"></span></a></li>
                     <li class="dropdown" id="nav-settings">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Settings <span class="caret"></span></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Admin <span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
                             <li><a href="#follows">Follows</a></li>
                             <li><a href="#queries">Search queries</a></li>
                             <li><a href="#filters">Filters</a></li>
+                            <li><a href="#settings">Settings</a></li>
                             <li class="divider"></li>
                             <li><a href="#logs">View system logs</a></li>
                             <li><a href="#logout">Logout</a></li>
@@ -81,6 +82,7 @@
     <? require_once('templates/queries.php'); ?>
     <? require_once('templates/filters.php'); ?>
     <? require_once('templates/logs.php'); ?>
+    <? require_once('templates/settings.php'); ?>
     <? require_once('templates/first_run.php'); ?>
     
     <script src="https://code.jquery.com/jquery-2.1.4.min.js" type="text/javascript"></script>

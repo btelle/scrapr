@@ -28,6 +28,7 @@ require_once(MODELS_DIR.'profiles.php');
 require_once(MODELS_DIR.'logs.php');
 require_once(MODELS_DIR.'filters.php');
 require_once(MODELS_DIR.'search_queries.php');
+require_once(MODELS_DIR.'settings.php');
 
 try {
     $sql = new SQL(SQL_USER, SQL_PASS, SQL_DB, SQL_HOST);
@@ -35,3 +36,5 @@ try {
 } catch(DatabaseErrorException $e) {
     die("MySQL Connection failed: ".$e->getMessage());
 }
+
+$settings = new DB_settings();

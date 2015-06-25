@@ -390,6 +390,38 @@ var scrapr = {
                     scrapr.show_view('route-filters');
                 }
             });
+        } else if(hash === '#settings') {
+            $('ul.nav a.dropdown-toggle').parent('li').addClass('active');
+            
+            $.ajax({
+                url: 'ajax.php', 
+                data: {api_key: scrapr.api_key, mode: 'settings'},
+                success: function(data) {
+                    for(i in data.settings) {
+                        console.log(data.settings[i]['key']+': '+data.settings[i]['value']);
+                        $('#setting-'+data.settings[i]['key']).val(data.settings[i]['value']);
+                    }
+                    
+                    $('#route-settings form').submit(function() {
+                        data = {api_key: scrapr.api_key, mode: 'settings'};
+                        $('#route-settings form input').each(function(){
+                            data[$(this).attr('id').replace('setting-', '')] = $(this).val();
+                        });
+                        console.log(data);
+                        $.ajax({
+                            url: 'ajax.php',
+                            data: data,
+                            type: 'post',
+                            success: function(data) {
+                                console.log(data);
+                                scrapr.message('Updated settings', 'success');
+                                scrapr.route('#settings');
+                            }
+                        });
+                    });
+                    scrapr.show_view('route-settings');
+                }
+            });
         } else if(hash == '#logs') {
             $('ul.nav a.dropdown-toggle').parent('li').addClass('active');
             $('#route-logs table tbody').html('');
