@@ -559,7 +559,7 @@ var scrapr = {
         }
         
         if(photo_type == 'follow') {
-            controls = '<li><a href="https://www.flickr.com/photos/'+photo.owner+'" target="_blank">View this profile</a></li><li><a href="#save">Save for later</a></li>';
+            controls = '<li><a href="https://www.flickr.com/photos/'+photo.owner+'" target="_blank">View '+photo.name+' on Flickr <sup><i class="glyphicon glyphicon-share"></i></sup></a></li><li><a href="#save">Save for later</a></li>';
         } else if(photo_type == 'search') {
             controls = '<li><a href="https://www.flickr.com/photos/'+photo.owner+'" target="_blank">View this profile</a></li><li><a href="#save">Save for later</a></li>';
         } else if(photo_type == 'saved') {

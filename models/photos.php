@@ -53,7 +53,7 @@ class DB_photos extends DB_Model
             
         $where[] = 'viewed IS NULL';
         
-        return $this->sql->SQL_Select('photos INNER JOIN scrape_results ON photos.id=scrape_results.photo_id', 'photos.*, retrieved, viewed', $where, 'photos.id DESC', $limit);
+        return $this->sql->SQL_Select('photos INNER JOIN scrape_results ON photos.id=scrape_results.photo_id INNER JOIN profiles ON scrape_results.profile_id=profiles.id', 'photos.*, name, retrieved, viewed', $where, 'photos.id DESC', $limit);
     }
     
     function get_search_photos($query_id, $start_id, $limit=30)
