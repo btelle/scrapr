@@ -731,6 +731,10 @@ var scrapr = {
                         $('ul.nav a[href="#search"] span').html(data.new_search_count);
                     }
                     
+                    if(data.new_saved_count > 0) {
+                        $('ul.nav a[href="#saved"] span').html(data.new_saved_count);
+                    }
+                    
                     $('#nav-login').hide();
                     scrapr.logged_in();
                     
