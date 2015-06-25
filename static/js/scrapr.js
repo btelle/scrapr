@@ -638,7 +638,7 @@ var scrapr = {
             data: {id: photo_id, api_key: scrapr.api_key},
             type: 'post',
             success: function(data) {
-                $('div.row[data-photo-id="'+photo_id+'"] a[href="#save"]').append(' <i class="glyphicon glyphicon-ok"></i>');
+                $('div.row[data-photo-id="'+photo_id+'"] a[href="#save"]').parent('li').append(' <i class="glyphicon glyphicon-ok text-success"></i>');
             }
         });
         return false;
