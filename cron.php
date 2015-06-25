@@ -43,9 +43,10 @@ class Scraper
     {
         $p = new DB_Profiles();
         $s = new DB_settings();
+        $l = new DB_logs();
         
         $params = array(
-            'min_upload_date'=>date('Y-m-d H:i:s', time()-$s->get('scrape_frequency')),
+            'min_upload_date'=>date('Y-m-d H:i:s', time()-$l->time_since_last_scrape()),
             'max_upload_date'=>date('Y-m-d H:i:s', time()),
             'content_type'=>6,
             'extras'=>'url_l,url_o,date_taken'
@@ -83,9 +84,10 @@ class Scraper
     {
         $s = new DB_Search_queries();
         $settings = new DB_settings();
+        $l = new DB_logs();
         
         $params = array(
-            'min_upload_date'=>date('Y-m-d H:i:s', time()-$settings->get('scrape_frequency')),
+            'min_upload_date'=>date('Y-m-d H:i:s', time()-$l->time_since_last_scrape()),
             'max_upload_date'=>date('Y-m-d H:i:s', time()),
             'content_type'=>6,
             'per_page'=>100,
