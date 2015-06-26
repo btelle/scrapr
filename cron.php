@@ -5,14 +5,16 @@ require_once('loader.php');
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-$l = new DB_logs();
-if($l->time_since_last_scrape() < $settings->get('scrape_frequency'))
-    exit('Cron script ran too soon, aborting');
-
 set_time_limit(60*60*6);
 ini_set('max_execution_time', 60*60*6);
 
 $s = new Scraper();
+$l = new DB_logs();
+
+$s->last_run = $l->time_since_last_scrape();
+if($s->last_run < $settings->get('scrape_frequency'))
+    exit('Cron script ran too soon, aborting');
+
 if($settings->get('run_scraper') == '1')
     $s->run_scraper();
 
@@ -26,6 +28,8 @@ class Scraper
     private $filters;
     private $flickr;
     private $failed_filter;
+    
+    public $last_run;
     
     function __construct()
     {
@@ -46,7 +50,7 @@ class Scraper
         $l = new DB_logs();
         
         $params = array(
-            'min_upload_date'=>date('Y-m-d H:i:s', time()-$l->time_since_last_scrape()),
+            'min_upload_date'=>date('Y-m-d H:i:s', time()-$this->last_run),
             'max_upload_date'=>date('Y-m-d H:i:s', time()),
             'content_type'=>6,
             'extras'=>'url_l,url_o,date_taken'
@@ -87,7 +91,7 @@ class Scraper
         $l = new DB_logs();
         
         $params = array(
-            'min_upload_date'=>date('Y-m-d H:i:s', time()-$l->time_since_last_scrape()),
+            'min_upload_date'=>date('Y-m-d H:i:s', time()-$this->last_run),
             'max_upload_date'=>date('Y-m-d H:i:s', time()),
             'content_type'=>6,
             'per_page'=>100,
