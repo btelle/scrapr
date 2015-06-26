@@ -54,7 +54,7 @@ class Scraper
             'min_upload_date'=>date('Y-m-d H:i:s', time()-$this->last_run),
             'max_upload_date'=>date('Y-m-d H:i:s', time()),
             'content_type'=>6,
-            'extras'=>'url_l,url_o,date_taken'
+            'extras'=>'url_l,url_o,date_taken,description,license'
         );
         
         foreach($p->get_all() as $profile)
@@ -96,7 +96,7 @@ class Scraper
             'max_upload_date'=>date('Y-m-d H:i:s', time()),
             'content_type'=>6,
             'per_page'=>100,
-            'extras'=>'url_l,url_o,date_taken'
+            'extras'=>'url_l,url_o,date_taken,description,license'
         );
         
         foreach($s->get_all() as $query)
@@ -156,6 +156,8 @@ class Scraper
                 $data['owner'] = $photo['owner'];
                 $data['large'] = $photo['url_l'];
                 $data['original'] = $photo['url_o'];
+                $data['description'] = $photo['title'];
+                $data['license'] = (is_numeric($photo['license'])? $photo['license']: 0);
                 try {
                     $p->insert($data);
                     $id = mysql_insert_id();

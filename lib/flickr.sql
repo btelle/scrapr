@@ -20,6 +20,8 @@ CREATE  TABLE IF NOT EXISTS `flickr_scraper`.`photos` (
   `date_taken` DATETIME NOT NULL ,
   `large` VARCHAR(255) NOT NULL ,
   `original` VARCHAR(255) NOT NULL ,
+  `description` TEXT NOT NULL ,
+  `license` INT(3) NOT NULL DEFAULT 0 ,
   `deleted` DATETIME NULL ,
   `saved_file` VARCHAR(255) NULL,
   PRIMARY KEY (`id`) ,
