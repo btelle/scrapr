@@ -10,11 +10,11 @@ ini_set('max_execution_time', 60*60*6);
 
 $l = new DB_logs();
 $last = $l->time_since_last_scrape();
+if($last < $settings->get('scrape_frequency'))
+    exit('Cron script ran too soon, aborting');
 
 $s = new Scraper();
 $s->last_run = $last;
-if($s->last_run < $settings->get('scrape_frequency'))
-    exit('Cron script ran too soon, aborting');
 
 if($settings->get('run_scraper') == '1')
     $s->run_scraper();
