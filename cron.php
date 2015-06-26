@@ -155,7 +155,7 @@ class Scraper
                 $data['date_taken'] = $photo['datetaken'];
                 $data['owner'] = $photo['owner'];
                 $data['large'] = $photo['url_l'];
-                $data['original'] = $photo['url_o'];
+                $data['original'] = isset($photo['url_o'])? $photo['url_o']: '';
                 $data['description'] = $photo['title'];
                 $data['license'] = (is_numeric($photo['license'])? $photo['license']: 0);
                 try {
