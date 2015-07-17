@@ -139,7 +139,7 @@ var scrapr = {
                     $('div.filler').append('<div class="row load-more"><div class="col-lg-8 text-center"><button class="btn btn-success">Load More</button></div></div>');
                     
                     $('.load-more button').click(function() {
-                        scrapr.load_more_photos('follow');
+                        scrapr.load_more_photos('saved');
                     });
                     
                     $('a[href="#download"]').click(function() {
