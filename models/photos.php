@@ -96,7 +96,7 @@ class DB_photos extends DB_Model
         }
         
         $query = "UPDATE $table SET viewed=NOW() WHERE photo_id <= '$start' AND photo_id >= '$end';";
-        //echo $query;
+        
         return $this->sql->SQL_Exec($query);
     }
     
@@ -129,11 +129,10 @@ class DB_photos extends DB_Model
         
         if(isset($rows[0]['id']))
         {
-            $filename = SAVE_DIR.($rows[0]['original'] == ''? basename($rows[0]['large']): basename($rows[0]['original']));
-            
-            $fh = fopen($filename, 'w');
-            fwrite($fh, file_get_contents($rows[0]['original'] == ''? $rows[0]['large']: $rows[0]['original']));
-            fclose($fh);
+            $url = $rows[0]['original'] == ''? $rows[0]['large']: $rows[0]['original']
+            $filename = SAVE_DIR.basename($url);
+
+            $this->_save_file_to_fs($url, $filename);
             
             $update = array('saved_file'=>$filename, 'deleted'=>NULL);
             $this->sql->SQL_Update($this->table, $update, array('id'=>$id));
@@ -170,9 +169,16 @@ class DB_photos extends DB_Model
     function save_image_by_url($url)
     {
         $filename = SAVE_DIR.(basename($url));
-            
+
+        return $this->_save_file_to_fs($url, $filename);
+    }
+
+    private function _save_file_to_fs($url, $filename)
+    {
+        $contents = file_get_contents($url);
+
         $fh = fopen($filename, 'w');
-        fwrite($fh, file_get_contents($url));
+        fwrite($fh, $contents);
         fclose($fh);
 
         return filesize($filename) > 0;
