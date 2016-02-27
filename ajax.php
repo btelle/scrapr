@@ -550,6 +550,28 @@ switch($_REQUEST['mode']) {
         {
             json_response(array('error'=>array('message'=>'Not Logged In')), 401);
         }
+        break;
+
+    case 'save_url':
+        if(confirm_api_key($_POST['api_key']))
+        {
+            $p = new DB_Photos();
+            
+            if($p->save_image_by_url($_POST['image-url']))
+            {
+                json_response(array('message'=>'Saved image successfully.'));
+            }
+            else
+            {
+                json_response(array('error'=>array('message'=>'Could not save image')), 500);
+            }
+        }
+        else
+        {
+            json_response(array('error'=>array('message'=>'Not Logged In')), 401);
+        }
+        
+        break;
 }
 
 function json_response($resp, $code=200)

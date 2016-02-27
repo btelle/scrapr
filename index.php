@@ -35,6 +35,7 @@
                             <li><a href="#queries">Search queries</a></li>
                             <li><a href="#filters">Filters</a></li>
                             <li><a href="#settings">Settings</a></li>
+                            <li><a href="#save-url">Save an Image</a></li>
                             <li class="divider"></li>
                             <li><a href="#logs">View system logs</a></li>
                             <li><a href="#logout">Logout</a></li>
@@ -83,6 +84,7 @@
     <? require_once('templates/filters.php'); ?>
     <? require_once('templates/logs.php'); ?>
     <? require_once('templates/settings.php'); ?>
+    <? require_once('templates/save_url.php'); ?>
     <? require_once('templates/first_run.php'); ?>
     
     <script src="https://code.jquery.com/jquery-2.1.4.min.js" type="text/javascript"></script>

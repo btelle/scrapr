@@ -166,4 +166,15 @@ class DB_photos extends DB_Model
         $query = "DELETE FROM p USING photos AS p WHERE NOT EXISTS(SELECT * FROM search_results WHERE photo_id=p.id) AND NOT EXISTS(SELECT * FROM scrape_results WHERE photo_id=p.id) AND saved_file IS NULL;";
         $this->sql->SQL_Exec($query);
     }
+
+    function save_image_by_url($url)
+    {
+        $filename = SAVE_DIR.(basename($url));
+            
+        $fh = fopen($filename, 'w');
+        fwrite($fh, file_get_contents($url));
+        fclose($fh);
+
+        return filesize($filename) > 0;
+    }
 }

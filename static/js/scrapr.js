@@ -422,6 +422,28 @@ var scrapr = {
                     scrapr.show_view('route-settings');
                 }
             });
+        } else if (hash == '#save-url') {
+            $('#route-saver form').submit(function(){
+                data = {api_key: scrapr.api_key, mode: 'save_url'};
+                data['image-url'] = $('#image-url').val();
+                console.log(data);
+                $.ajax({
+                    url: 'ajax.php',
+                    data: data,
+                    type: 'post',
+                    success: function(data) {
+                        console.log(data);
+                        scrapr.message('Saved the image', 'success');
+                        $('#image-url').val('');
+                        scrapr.route('#save-url');
+                    }, 
+                    error: function(data) {
+                        scrapr.show_error(data.responseJSON.error.message);
+                    }
+                });
+                return false;
+            });
+            scrapr.show_view('route-saver');
         } else if(hash == '#logs') {
             $('ul.nav a.dropdown-toggle').parent('li').addClass('active');
             $('#route-logs table tbody').html('');
