@@ -129,7 +129,7 @@ class DB_photos extends DB_Model
         
         if(isset($rows[0]['id']))
         {
-            $url = $rows[0]['original'] == ''? $rows[0]['large']: $rows[0]['original']
+            $url = $rows[0]['original'] == ''? $rows[0]['large']: $rows[0]['original'];
             $filename = SAVE_DIR.basename($url);
 
             $this->_save_file_to_fs($url, $filename);
