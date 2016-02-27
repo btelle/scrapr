@@ -54,6 +54,7 @@ class Scraper
             'min_upload_date'=>date('Y-m-d H:i:s', time()-$this->last_run),
             'max_upload_date'=>date('Y-m-d H:i:s', time()),
             'content_type'=>6,
+            'per_page'=>500,
             'extras'=>'url_l,url_o,date_taken,description,license'
         );
         
@@ -95,7 +96,7 @@ class Scraper
             'min_upload_date'=>date('Y-m-d H:i:s', time()-$this->last_run),
             'max_upload_date'=>date('Y-m-d H:i:s', time()),
             'content_type'=>6,
-            'per_page'=>100,
+            'per_page'=>500,
             'extras'=>'url_l,url_o,date_taken,description,license'
         );
         
