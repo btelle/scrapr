@@ -13,30 +13,45 @@ $last = $l->time_since_last_scrape();
 if($last < $settings->get('scrape_frequency'))
     exit('Cron script ran too soon, aborting');
 
-$s = new Scraper();
+$snid = isset($_GET['snid'])? $_GET['snid']: NULL;
+
+$s = new Scraper($snid);
 $s->last_run = $last;
 
-if($settings->get('run_scraper') == '1')
+if(isset($_GET['snid']))
+{
     $s->run_scraper();
+}
+else
+{
+    if($settings->get('run_scraper') == '1')
+        $s->run_scraper();
 
-if($settings->get('run_search') == '1')
-    $s->run_searches();
+    if($settings->get('run_search') == '1')
+        $s->run_searches();
 
-$s->run_garbage_collector();
+    $s->run_garbage_collector();
+}
 
 class Scraper
 {
     private $filters;
     private $flickr;
     private $failed_filter;
+    private $snid;
     
     public $last_run;
     
-    function __construct()
+    function __construct($snid=NULL)
     {
         $this->flickr = new phpFlickr(FLICKR_API_KEY, FLICKR_AUTH_TOKEN);
         $this->filters = $this->get_filters();
-        $this->log_message('info', 'Starting cron scrape');
+        $this->snid = $snid;
+
+        if($this->snid === NULL)
+            $this->log_message('info', 'Starting cron scrape');
+        else
+            $this->log_message('info', 'Backfilling '.$this->snid);
     }
     
     function __destruct()
@@ -60,6 +75,11 @@ class Scraper
         
         foreach($p->get_all() as $profile)
         {
+            if($this->snid !== NULL && $profile['snid'] != $this->snid)
+                continue;
+            elseif($this->snid !== NULL)
+                $params['min_upload_date'] = date('Y-m-d H:i:s', time()-(60*60*12)),
+
             $this->log_message('info', 'Scraping '.$profile['name']);
             
             $page = 1;

@@ -174,6 +174,9 @@ switch($_REQUEST['mode']) {
                 
                 if($p->insert($data))
                 {
+                    $cmd = 'php cron.php snid='.str_replace(' ', '', $data['snid']).' > /dev/null 2>/dev/null &';
+                    exec($cmd);
+
                     json_response(array('message'=>'OK'));
                 }
             }
@@ -556,7 +559,7 @@ switch($_REQUEST['mode']) {
         if(confirm_api_key($_POST['api_key']))
         {
             $p = new DB_Photos();
-            
+
             if($p->save_image_by_url($_POST['image-url']))
             {
                 json_response(array('message'=>'Saved image successfully.'));
